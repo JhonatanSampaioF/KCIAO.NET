@@ -1,49 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KCIAO.API.MVC.Models;
 using KCIAO.API.MVC.Infraestructure.Data.AppData;
+using KCIAO.API.MVC.Application.Interfaces;
+using KCIAO.API.MVC.Domain.Entities;
+using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
 
 namespace KCIAO.API.MVC.Presentation.Controllers
 {
     public class ClienteController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly IClienteApplicationService _clienteApplicationService;
 
-        public ClienteController(ApplicationContext context)
+        public ClienteController(IClienteApplicationService clienteApplicationService)
         {
-            _context = context;
+            _clienteApplicationService = clienteApplicationService;
         }
 
         // GET: Cliente
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cliente.ToListAsync());
+            var clientesEntities = _clienteApplicationService.ObterTodosClientes();
+
+            var clientes = clientesEntities?.Select(cliente => new ClienteEditDto
+            {
+                id_cliente = cliente.id_cliente,
+                nm_cliente = cliente.nm_cliente
+                // outros campos, se necessário
+            }).ToList() ?? new List<ClienteEditDto>(); // Retorna uma lista vazia se `clientesEntities` for null
+
+            return View(clientes);
         }
 
         // GET: Cliente/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            var cliente = _clienteApplicationService.ObterClienteporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var clienteModel = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.id_cliente == id);
-            if (clienteModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(clienteModel);
+            return View(cliente);
         }
 
         // GET: Cliente/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -54,31 +60,32 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_cliente,nm_cliente")] ClienteModel clienteModel)
+        public async Task<IActionResult> Create([Bind("id_cliente,nm_cliente")] ClienteDto model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(clienteModel);
-                await _context.SaveChangesAsync();
+                _clienteApplicationService.SalvarDadosCliente(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(clienteModel);
+            return View(model);
         }
 
         // GET: Cliente/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            var cliente = _clienteApplicationService.ObterClienteporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var clienteModel = await _context.Cliente.FindAsync(id);
-            if (clienteModel == null)
+            return View(new ClienteEditDto
             {
-                return NotFound();
-            }
-            return View(clienteModel);
+                id_cliente = cliente.id_cliente,
+                nm_cliente = cliente.nm_cliente
+            });
         }
 
         // POST: Cliente/Edit/5
@@ -86,52 +93,29 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_cliente,nm_cliente")] ClienteModel clienteModel)
+        public async Task<IActionResult> Edit(string id, [Bind("id_cliente,nm_cliente")] ClienteEditDto cliente)
         {
-            if (id != clienteModel.id_cliente)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(clienteModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteModelExists(clienteModel.id_cliente))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _clienteApplicationService.EditarDadosCliente(id, cliente);
                 return RedirectToAction(nameof(Index));
             }
-            return View(clienteModel);
+            return View(cliente);
         }
 
         // GET: Cliente/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            var cliente = _clienteApplicationService.ObterClienteporId(id ?? "");
+
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var clienteModel = await _context.Cliente
-                .FirstOrDefaultAsync(m => m.id_cliente == id);
-            if (clienteModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(clienteModel);
+            return View(cliente);
         }
 
         // POST: Cliente/Delete/5
@@ -139,19 +123,14 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var clienteModel = await _context.Cliente.FindAsync(id);
-            if (clienteModel != null)
+            var cliente = _clienteApplicationService.DeletarDadosCliente(id);
+
+            if (cliente != null)
             {
-                _context.Cliente.Remove(clienteModel);
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClienteModelExists(string id)
-        {
-            return _context.Cliente.Any(e => e.id_cliente == id);
+            return View(cliente);
         }
     }
 }
