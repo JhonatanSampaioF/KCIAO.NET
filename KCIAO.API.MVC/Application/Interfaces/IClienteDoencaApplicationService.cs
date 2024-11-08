@@ -3,7 +3,7 @@ using KCIAO.API.MVC.Application.Dtos;
 
 namespace KCIAO.API.MVC.Application.Interfaces
 {
-    public interface IClienteClienteDoencaApplicationService
+    public interface IClienteDoencaApplicationService
     {
         IEnumerable<ClienteDoenca>? ObterTodasClienteDoencas();
         ClienteDoenca? ObterClienteDoencaporId(string fk_cliente, string fk_doenca);

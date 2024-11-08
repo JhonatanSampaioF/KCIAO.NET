@@ -14,6 +14,6 @@ namespace KCIAO.API.MVC.Application.Dtos
         [RegularExpression(@"^([01][0-9]|2[0-3])[0-5][0-9]$", ErrorMessage = "Formato de horário inválido. Use o formato HHmm, por exemplo, 1630 para 16:30.")]
         public int horario_consulta { get; set; }
         [Required(ErrorMessage = $"Campo {nameof(fk_evento)} é obrigatório")]
-        public string? fk_evento { get; set; } = string.Empty;
+        public string fk_evento { get; set; } = string.Empty;
     }
 }

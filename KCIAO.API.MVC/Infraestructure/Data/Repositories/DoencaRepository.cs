@@ -1,4 +1,5 @@
-﻿using KCIAO.API.MVC.Domain.Entities;
+﻿using KCIAO.API.MVC.Domain.Interfaces;
+using KCIAO.API.MVC.Domain.Entities;
 using KCIAO.API.MVC.Infraestructure.Data.AppData;
 
 namespace KCIAO.API.MVC.Infraestructure.Data.Repositories

@@ -1,4 +1,6 @@
-﻿namespace KCIAO.API.MVC.Domain.Entities
+﻿using KCIAO.API.MVC.Domain.Entities;
+
+namespace KCIAO.API.MVC.Domain.Interfaces
 {
     public interface IClienteDoencaRepository
     {
