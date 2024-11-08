@@ -1,7 +1,18 @@
+using KCIAO.API.MVC.AppData;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+
+builder.Services.AddDbContext<ApplicationContext>(options => {
+
+    options.UseOracle(builder.Configuration.GetConnectionString("Oracle"));
+
+});
 
 var app = builder.Build();
 

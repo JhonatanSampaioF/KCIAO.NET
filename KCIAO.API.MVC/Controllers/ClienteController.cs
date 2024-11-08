@@ -1,31 +1,157 @@
-﻿using KCIAO.API.MVC.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using KCIAO.API.MVC.AppData;
+using KCIAO.API.MVC.Models;
 
 namespace KCIAO.API.MVC.Controllers
 {
     public class ClienteController : Controller
     {
-        private readonly ILogger<ClienteController> _logger;
+        private readonly ApplicationContext _context;
 
-        public ClienteController(ILogger<ClienteController> logger)
+        public ClienteController(ApplicationContext context)
         {
-            _logger = logger;
+            _context = context;
         }
-        public IActionResult Index()
+
+        // GET: Cliente
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Cliente.ToListAsync());
+        }
+
+        // GET: Cliente/Details/5
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clienteModel = await _context.Cliente
+                .FirstOrDefaultAsync(m => m.id_cliente == id);
+            if (clienteModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(clienteModel);
+        }
+
+        // GET: Cliente/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult Cliente()
+        // POST: Cliente/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("id_cliente,nm_cliente")] ClienteModel clienteModel)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                _context.Add(clienteModel);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(clienteModel);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // GET: Cliente/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clienteModel = await _context.Cliente.FindAsync(id);
+            if (clienteModel == null)
+            {
+                return NotFound();
+            }
+            return View(clienteModel);
+        }
+
+        // POST: Cliente/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("id_cliente,nm_cliente")] ClienteModel clienteModel)
+        {
+            if (id != clienteModel.id_cliente)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(clienteModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClienteModelExists(clienteModel.id_cliente))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(clienteModel);
+        }
+
+        // GET: Cliente/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var clienteModel = await _context.Cliente
+                .FirstOrDefaultAsync(m => m.id_cliente == id);
+            if (clienteModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(clienteModel);
+        }
+
+        // POST: Cliente/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var clienteModel = await _context.Cliente.FindAsync(id);
+            if (clienteModel != null)
+            {
+                _context.Cliente.Remove(clienteModel);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ClienteModelExists(string id)
+        {
+            return _context.Cliente.Any(e => e.id_cliente == id);
         }
     }
 }

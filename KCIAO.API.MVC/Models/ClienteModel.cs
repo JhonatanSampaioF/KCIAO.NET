@@ -4,13 +4,14 @@ using System.ComponentModel;
 
 namespace KCIAO.API.MVC.Models
 {
+    [Table("tb_cliente")]
     public class ClienteModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DisplayName("Id")]
-        public string id_cliente { get; set; }
+        public string? id_cliente { get; set; }
         [DisplayName("Nome")]
-        public string nm_cliente { get; set; }
+        public string? nm_cliente { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace KCIAO.API.Migrations
             modelBuilder.Entity("KCIAO.API.Domain.Entities.ClienteEntity", b =>
                 {
                     b.Property<string>("id_cliente")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<string>("nm_cliente")
@@ -38,6 +39,7 @@ namespace KCIAO.API.Migrations
             modelBuilder.Entity("KCIAO.API.Domain.Entities.DoencaEntity", b =>
                 {
                     b.Property<string>("id_doenca")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<string>("nm_doenca")

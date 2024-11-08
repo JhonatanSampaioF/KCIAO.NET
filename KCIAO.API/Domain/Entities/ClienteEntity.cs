@@ -8,7 +8,7 @@ namespace KCIAO.API.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string id_cliente { get; set; }
-        public string nm_cliente { get; set; }
+        public string? id_cliente { get; set; }
+        public string? nm_cliente { get; set; }
     }
 }

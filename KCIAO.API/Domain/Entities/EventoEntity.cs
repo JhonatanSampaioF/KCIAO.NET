@@ -8,9 +8,9 @@ namespace KCIAO.API.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string id_evento { get; set; }
-        public string tipo_evento { get; set; }
-        public string desc_evento { get; set; }
+        public string? id_evento { get; set; }
+        public string? tipo_evento { get; set; }
+        public string? desc_evento { get; set; }
         public DateOnly dt_evento { get; set; }
     }
 }
