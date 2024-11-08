@@ -5,27 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using KCIAO.API.MVC.AppData;
 using KCIAO.API.MVC.Models;
+using KCIAO.API.MVC.Infraestructure.Data.AppData;
 
-namespace KCIAO.API.MVC.Controllers
+namespace KCIAO.API.MVC.Presentation.Controllers
 {
-    public class ConsultaController : Controller
+    public class EventoController : Controller
     {
         private readonly ApplicationContext _context;
 
-        public ConsultaController(ApplicationContext context)
+        public EventoController(ApplicationContext context)
         {
             _context = context;
         }
 
-        // GET: Consulta
+        // GET: Evento
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Consulta.ToListAsync());
+            return View(await _context.Evento.ToListAsync());
         }
 
-        // GET: Consulta/Details/5
+        // GET: Evento/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace KCIAO.API.MVC.Controllers
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta
-                .FirstOrDefaultAsync(m => m.id_consulta == id);
-            if (consultaModel == null)
+            var eventoModel = await _context.Evento
+                .FirstOrDefaultAsync(m => m.id_evento == id);
+            if (eventoModel == null)
             {
                 return NotFound();
             }
 
-            return View(consultaModel);
+            return View(eventoModel);
         }
 
-        // GET: Consulta/Create
+        // GET: Evento/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Consulta/Create
+        // POST: Evento/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaModel consultaModel)
+        public async Task<IActionResult> Create([Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoModel eventoModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(consultaModel);
+                _context.Add(eventoModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(consultaModel);
+            return View(eventoModel);
         }
 
-        // GET: Consulta/Edit/5
+        // GET: Evento/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace KCIAO.API.MVC.Controllers
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta.FindAsync(id);
-            if (consultaModel == null)
+            var eventoModel = await _context.Evento.FindAsync(id);
+            if (eventoModel == null)
             {
                 return NotFound();
             }
-            return View(consultaModel);
+            return View(eventoModel);
         }
 
-        // POST: Consulta/Edit/5
+        // POST: Evento/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaModel consultaModel)
+        public async Task<IActionResult> Edit(string id, [Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoModel eventoModel)
         {
-            if (id != consultaModel.id_consulta)
+            if (id != eventoModel.id_evento)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace KCIAO.API.MVC.Controllers
             {
                 try
                 {
-                    _context.Update(consultaModel);
+                    _context.Update(eventoModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ConsultaModelExists(consultaModel.id_consulta))
+                    if (!EventoModelExists(eventoModel.id_evento))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace KCIAO.API.MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(consultaModel);
+            return View(eventoModel);
         }
 
-        // GET: Consulta/Delete/5
+        // GET: Evento/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -124,34 +124,34 @@ namespace KCIAO.API.MVC.Controllers
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta
-                .FirstOrDefaultAsync(m => m.id_consulta == id);
-            if (consultaModel == null)
+            var eventoModel = await _context.Evento
+                .FirstOrDefaultAsync(m => m.id_evento == id);
+            if (eventoModel == null)
             {
                 return NotFound();
             }
 
-            return View(consultaModel);
+            return View(eventoModel);
         }
 
-        // POST: Consulta/Delete/5
+        // POST: Evento/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var consultaModel = await _context.Consulta.FindAsync(id);
-            if (consultaModel != null)
+            var eventoModel = await _context.Evento.FindAsync(id);
+            if (eventoModel != null)
             {
-                _context.Consulta.Remove(consultaModel);
+                _context.Evento.Remove(eventoModel);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ConsultaModelExists(string id)
+        private bool EventoModelExists(string id)
         {
-            return _context.Consulta.Any(e => e.id_consulta == id);
+            return _context.Evento.Any(e => e.id_evento == id);
         }
     }
 }

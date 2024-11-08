@@ -2,7 +2,7 @@ using KCIAO.API.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace KCIAO.API.MVC.Controllers
+namespace KCIAO.API.MVC.Presentation.Controllers
 {
     public class HomeController : Controller
     {

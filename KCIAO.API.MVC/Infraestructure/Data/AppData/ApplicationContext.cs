@@ -1,20 +1,20 @@
-﻿using KCIAO.API.MVC.Models;
+﻿using KCIAO.API.MVC.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace KCIAO.API.MVC.AppData
+namespace KCIAO.API.MVC.Infraestructure.Data.AppData
 {
-    public class ApplicationContext: DbContext
+    public class ApplicationContext : DbContext
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
 
         }
 
-        public DbSet<ClienteModel> Cliente { get; set; }
-        public DbSet<DoencaModel> Doenca { get; set; }
+        public DbSet<ClienteEntity> Cliente { get; set; }
+        public DbSet<DoencaEntity> Doenca { get; set; }
         public DbSet<ClienteDoenca> ClienteDoenca { get; set; }
-        public DbSet<ConsultaModel> Consulta { get; set; }
-        public DbSet<EventoModel> Evento { get; set; }
+        public DbSet<ConsultaEntity> Consulta { get; set; }
+        public DbSet<EventoEntity> Evento { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,15 +32,15 @@ namespace KCIAO.API.MVC.AppData
                 .WithMany(d => d.ClienteDoencas)
                 .HasForeignKey(cd => cd.fk_doenca);
 
-            modelBuilder.Entity<EventoModel>()
+            modelBuilder.Entity<EventoEntity>()
                 .HasOne(e => e.Cliente)
                 .WithMany(c => c.Eventos)
                 .HasForeignKey(e => e.fk_cliente);
 
-            modelBuilder.Entity<EventoModel>()
+            modelBuilder.Entity<EventoEntity>()
                 .HasOne(e => e.Consulta)
                 .WithOne(c => c.Evento)
-                .HasForeignKey<ConsultaModel>(c => c.fk_evento);
+                .HasForeignKey<ConsultaEntity>(c => c.fk_evento);
         }
     }
 }

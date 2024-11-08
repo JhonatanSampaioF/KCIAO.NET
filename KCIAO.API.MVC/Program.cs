@@ -1,4 +1,4 @@
-using KCIAO.API.MVC.AppData;
+using KCIAO.API.MVC.Infraestructure.Data.AppData;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

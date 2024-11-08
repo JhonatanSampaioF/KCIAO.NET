@@ -16,7 +16,7 @@ namespace KCIAO.API.MVC.Domain.Entities
         public string? nm_cliente { get; set; }
         public ICollection<ClienteDoenca> ClienteDoencas { get; set; } = new List<ClienteDoenca>();
 
-        public ICollection<EventoModel> Eventos { get; set; } = new List<EventoModel>();
+        public ICollection<EventoEntity> Eventos { get; set; } = new List<EventoEntity>();
 
 
     }

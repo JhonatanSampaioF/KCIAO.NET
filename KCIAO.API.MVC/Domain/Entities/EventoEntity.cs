@@ -22,9 +22,9 @@ namespace KCIAO.API.MVC.Domain.Entities
         [DisplayName("Cliente")]
         public string fk_cliente { get; set; }
 
-        public ClienteModel Cliente { get; set; }
+        public ClienteEntity Cliente { get; set; }
 
-        public ConsultaModel Consulta { get; set; }
+        public ConsultaEntity Consulta { get; set; }
 
     }
 }

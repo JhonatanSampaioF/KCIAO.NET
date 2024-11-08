@@ -22,6 +22,6 @@ namespace KCIAO.API.MVC.Domain.Entities
         [DisplayName("Evento")]
         public string fk_evento { get; set; }
 
-        public EventoModel Evento { get; set; }
+        public EventoEntity Evento { get; set; }
     }
 }
