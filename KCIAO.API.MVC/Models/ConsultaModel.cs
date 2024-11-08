@@ -17,5 +17,10 @@ namespace KCIAO.API.MVC.Models
         public string? local_consulta { get; set; }
         [DisplayName("Horário")]
         public int horario_consulta { get; set; }
+        [ForeignKey("Evento")]
+        [DisplayName("Evento")]
+        public string fk_evento { get; set; }
+
+        public EventoModel Evento { get; set; }
     }
 }

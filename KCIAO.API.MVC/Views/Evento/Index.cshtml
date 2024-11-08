@@ -1,0 +1,48 @@
+﻿@model IEnumerable<KCIAO.API.MVC.Models.EventoModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Evento</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.tipo_evento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.desc_evento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.dt_evento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.tipo_evento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.desc_evento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.dt_evento)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id_evento">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id_evento">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id_evento">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

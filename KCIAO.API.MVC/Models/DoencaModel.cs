@@ -13,5 +13,7 @@ namespace KCIAO.API.MVC.Models
         public string? id_doenca { get; set; }
         [DisplayName("Nome")]
         public string? nm_doenca { get; set; }
+        public ICollection<ClienteDoenca> ClienteDoencas { get; set; } = new List<ClienteDoenca>();
+
     }
 }

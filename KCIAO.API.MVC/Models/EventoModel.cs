@@ -16,6 +16,14 @@ namespace KCIAO.API.MVC.Models
         [DisplayName("Descrição")]
         public string? desc_evento { get; set; }
         [DisplayName("Data")]
-        public DateOnly dt_evento { get; set; }
+        public DateTime dt_evento { get; set; }
+        [ForeignKey("Cliente")]
+        [DisplayName("Cliente")]
+        public string fk_cliente { get; set; }
+
+        public ClienteModel Cliente { get; set; }
+
+        public ConsultaModel Consulta { get; set; }
+
     }
 }
