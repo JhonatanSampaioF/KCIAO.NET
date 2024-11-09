@@ -1,49 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KCIAO.API.MVC.Models;
-using KCIAO.API.MVC.Infraestructure.Data.AppData;
+﻿using Microsoft.AspNetCore.Mvc;
+using KCIAO.API.MVC.Application.Interfaces;
+using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
 
 namespace KCIAO.API.MVC.Presentation.Controllers
 {
     public class EventoController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly IEventoApplicationService _eventoApplicationService;
 
-        public EventoController(ApplicationContext context)
+        public EventoController(IEventoApplicationService eventoApplicationService)
         {
-            _context = context;
+            _eventoApplicationService = eventoApplicationService;
         }
 
         // GET: Evento
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Evento.ToListAsync());
+            var eventosEntities = _eventoApplicationService.ObterTodasEventos();
+
+            var eventos = eventosEntities?.Select(evento => new EventoEditDto
+            {
+                id_evento = evento.id_evento,
+                tipo_evento = evento.tipo_evento,
+                desc_evento = evento.desc_evento,
+                dt_evento = evento.dt_evento,
+                fk_cliente = evento.fk_cliente
+                // outros campos, se necessário
+            }).ToList() ?? new List<EventoEditDto>(); // Retorna uma lista vazia se `eventosEntities` for null
+
+            return View(eventos);
         }
 
         // GET: Evento/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            var evento = _eventoApplicationService.ObterEventoporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var eventoModel = await _context.Evento
-                .FirstOrDefaultAsync(m => m.id_evento == id);
-            if (eventoModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(eventoModel);
+            return View(evento);
         }
 
         // GET: Evento/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -54,31 +59,35 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoModel eventoModel)
+        public async Task<IActionResult> Create([Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoDto model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(eventoModel);
-                await _context.SaveChangesAsync();
+                _eventoApplicationService.SalvarDadosEvento(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(eventoModel);
+            return View(model);
         }
 
         // GET: Evento/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            var evento = _eventoApplicationService.ObterEventoporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var eventoModel = await _context.Evento.FindAsync(id);
-            if (eventoModel == null)
+            return View(new EventoEditDto
             {
-                return NotFound();
-            }
-            return View(eventoModel);
+                id_evento = evento.id_evento,
+                tipo_evento = evento.tipo_evento,
+                desc_evento = evento.desc_evento,
+                dt_evento = evento.dt_evento,
+                fk_cliente = evento.fk_cliente
+            });
         }
 
         // POST: Evento/Edit/5
@@ -86,52 +95,29 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoModel eventoModel)
+        public async Task<IActionResult> Edit(string id, [Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoEditDto evento)
         {
-            if (id != eventoModel.id_evento)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(eventoModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EventoModelExists(eventoModel.id_evento))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _eventoApplicationService.EditarDadosEvento(id, evento);
                 return RedirectToAction(nameof(Index));
             }
-            return View(eventoModel);
+            return View(evento);
         }
 
         // GET: Evento/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            var evento = _eventoApplicationService.ObterEventoporId(id ?? "");
+
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var eventoModel = await _context.Evento
-                .FirstOrDefaultAsync(m => m.id_evento == id);
-            if (eventoModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(eventoModel);
+            return View(evento);
         }
 
         // POST: Evento/Delete/5
@@ -139,19 +125,14 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var eventoModel = await _context.Evento.FindAsync(id);
-            if (eventoModel != null)
+            var evento = _eventoApplicationService.DeletarDadosEvento(id);
+
+            if (evento != null)
             {
-                _context.Evento.Remove(eventoModel);
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EventoModelExists(string id)
-        {
-            return _context.Evento.Any(e => e.id_evento == id);
+            return View(evento);
         }
     }
 }

@@ -1,49 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KCIAO.API.MVC.Models;
-using KCIAO.API.MVC.Infraestructure.Data.AppData;
+﻿using Microsoft.AspNetCore.Mvc;
+using KCIAO.API.MVC.Application.Interfaces;
+using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
 
 namespace KCIAO.API.MVC.Presentation.Controllers
 {
     public class DoencaController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly IDoencaApplicationService _doencaApplicationService;
 
-        public DoencaController(ApplicationContext context)
+        public DoencaController(IDoencaApplicationService doencaApplicationService)
         {
-            _context = context;
+            _doencaApplicationService = doencaApplicationService;
         }
 
         // GET: Doenca
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Doenca.ToListAsync());
+            var doencasEntities = _doencaApplicationService.ObterTodasDoencas();
+
+            var doencas = doencasEntities?.Select(doenca => new DoencaEditDto
+            {
+                id_doenca = doenca.id_doenca,
+                nm_doenca = doenca.nm_doenca
+                // outros campos, se necessário
+            }).ToList() ?? new List<DoencaEditDto>(); // Retorna uma lista vazia se `doencasEntities` for null
+
+            return View(doencas);
         }
 
         // GET: Doenca/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            var doenca = _doencaApplicationService.ObterDoencaporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var doencaModel = await _context.Doenca
-                .FirstOrDefaultAsync(m => m.id_doenca == id);
-            if (doencaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(doencaModel);
+            return View(doenca);
         }
 
         // GET: Doenca/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -54,31 +56,32 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_doenca,nm_doenca")] DoencaModel doencaModel)
+        public async Task<IActionResult> Create([Bind("id_doenca,nm_doenca")] DoencaDto model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(doencaModel);
-                await _context.SaveChangesAsync();
+                _doencaApplicationService.SalvarDadosDoenca(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(doencaModel);
+            return View(model);
         }
 
         // GET: Doenca/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            var doenca = _doencaApplicationService.ObterDoencaporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var doencaModel = await _context.Doenca.FindAsync(id);
-            if (doencaModel == null)
+            return View(new DoencaEditDto
             {
-                return NotFound();
-            }
-            return View(doencaModel);
+                id_doenca = doenca.id_doenca,
+                nm_doenca = doenca.nm_doenca
+            });
         }
 
         // POST: Doenca/Edit/5
@@ -86,52 +89,29 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_doenca,nm_doenca")] DoencaModel doencaModel)
+        public async Task<IActionResult> Edit(string id, [Bind("id_doenca,nm_doenca")] DoencaEditDto doenca)
         {
-            if (id != doencaModel.id_doenca)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(doencaModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DoencaModelExists(doencaModel.id_doenca))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _doencaApplicationService.EditarDadosDoenca(id, doenca);
                 return RedirectToAction(nameof(Index));
             }
-            return View(doencaModel);
+            return View(doenca);
         }
 
         // GET: Doenca/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            var doenca = _doencaApplicationService.ObterDoencaporId(id ?? "");
+
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var doencaModel = await _context.Doenca
-                .FirstOrDefaultAsync(m => m.id_doenca == id);
-            if (doencaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(doencaModel);
+            return View(doenca);
         }
 
         // POST: Doenca/Delete/5
@@ -139,19 +119,14 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var doencaModel = await _context.Doenca.FindAsync(id);
-            if (doencaModel != null)
+            var doenca = _doencaApplicationService.DeletarDadosDoenca(id);
+
+            if (doenca != null)
             {
-                _context.Doenca.Remove(doencaModel);
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool DoencaModelExists(string id)
-        {
-            return _context.Doenca.Any(e => e.id_doenca == id);
+            return View(doenca);
         }
     }
 }

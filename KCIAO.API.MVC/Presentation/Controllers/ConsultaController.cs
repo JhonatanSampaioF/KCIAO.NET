@@ -1,49 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KCIAO.API.MVC.Models;
-using KCIAO.API.MVC.Infraestructure.Data.AppData;
+﻿using Microsoft.AspNetCore.Mvc;
+using KCIAO.API.MVC.Application.Interfaces;
+using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
+using KCIAO.API.MVC.Application.Services;
 
 namespace KCIAO.API.MVC.Presentation.Controllers
 {
     public class ConsultaController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly IConsultaApplicationService _consultaApplicationService;
 
-        public ConsultaController(ApplicationContext context)
+        public ConsultaController(IConsultaApplicationService consultaApplicationService)
         {
-            _context = context;
+            _consultaApplicationService = consultaApplicationService;
         }
 
         // GET: Consulta
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Consulta.ToListAsync());
+            var consultasEntities = _consultaApplicationService.ObterTodasConsultas();
+
+            var consultas = consultasEntities?.Select(consulta => new ConsultaEditDto
+            {
+                id_consulta = consulta.id_consulta,
+                profissional = consulta.profissional,
+                local_consulta = consulta.local_consulta,
+                horario_consulta = consulta.horario_consulta,
+                fk_evento = consulta.fk_evento
+                // outros campos, se necessário
+            }).ToList() ?? new List<ConsultaEditDto>(); // Retorna uma lista vazia se `consultasEntities` for null
+
+            return View(consultas);
         }
 
         // GET: Consulta/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            var consulta = _consultaApplicationService.ObterConsultaporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta
-                .FirstOrDefaultAsync(m => m.id_consulta == id);
-            if (consultaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(consultaModel);
+            return View(consulta);
         }
 
         // GET: Consulta/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -54,31 +60,35 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaModel consultaModel)
+        public async Task<IActionResult> Create([Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaDto model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(consultaModel);
-                await _context.SaveChangesAsync();
+                _consultaApplicationService.SalvarDadosConsulta(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(consultaModel);
+            return View(model);
         }
 
         // GET: Consulta/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            var consulta = _consultaApplicationService.ObterConsultaporId(id ?? "");
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta.FindAsync(id);
-            if (consultaModel == null)
+            return View(new ConsultaEditDto
             {
-                return NotFound();
-            }
-            return View(consultaModel);
+                id_consulta = consulta.id_consulta,
+                profissional = consulta.profissional,
+                local_consulta = consulta.local_consulta,
+                horario_consulta = consulta.horario_consulta,
+                fk_evento = consulta.fk_evento
+            });
         }
 
         // POST: Consulta/Edit/5
@@ -86,52 +96,29 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaModel consultaModel)
+        public async Task<IActionResult> Edit(string id, [Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaEditDto consulta)
         {
-            if (id != consultaModel.id_consulta)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(consultaModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ConsultaModelExists(consultaModel.id_consulta))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _consultaApplicationService.EditarDadosConsulta(id, consulta);
                 return RedirectToAction(nameof(Index));
             }
-            return View(consultaModel);
+            return View(consulta);
         }
 
         // GET: Consulta/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            var consulta = _consultaApplicationService.ObterConsultaporId(id ?? "");
+
+
+            if (id == "" || id == null)
             {
                 return NotFound();
             }
 
-            var consultaModel = await _context.Consulta
-                .FirstOrDefaultAsync(m => m.id_consulta == id);
-            if (consultaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(consultaModel);
+            return View(consulta);
         }
 
         // POST: Consulta/Delete/5
@@ -139,19 +126,14 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var consultaModel = await _context.Consulta.FindAsync(id);
-            if (consultaModel != null)
+            var consulta = _consultaApplicationService.DeletarDadosConsulta(id);
+
+            if (consulta != null)
             {
-                _context.Consulta.Remove(consultaModel);
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ConsultaModelExists(string id)
-        {
-            return _context.Consulta.Any(e => e.id_consulta == id);
+            return View(consulta);
         }
     }
 }

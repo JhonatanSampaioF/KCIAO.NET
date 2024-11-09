@@ -1,5 +1,6 @@
 ﻿using KCIAO.API.MVC.Domain.Entities;
 using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
 
 namespace KCIAO.API.MVC.Application.Interfaces
 {
@@ -8,7 +9,7 @@ namespace KCIAO.API.MVC.Application.Interfaces
         IEnumerable<ConsultaEntity>? ObterTodasConsultas();
         ConsultaEntity? ObterConsultaporId(string id);
         ConsultaEntity? SalvarDadosConsulta(ConsultaDto entity);
-        ConsultaEntity? EditarDadosConsulta(string id, ConsultaDto entity);
+        ConsultaEntity? EditarDadosConsulta(string id, ConsultaEditDto entity);
         ConsultaEntity? DeletarDadosConsulta(string id);
     }
 }

@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KCIAO.API.MVC.Models;
-using KCIAO.API.MVC.Infraestructure.Data.AppData;
 using KCIAO.API.MVC.Application.Interfaces;
-using KCIAO.API.MVC.Domain.Entities;
 using KCIAO.API.MVC.Application.Dtos;
 using KCIAO.API.MVC.Application.Dtos.Edits;
 

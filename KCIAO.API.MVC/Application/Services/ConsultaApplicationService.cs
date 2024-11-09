@@ -2,6 +2,7 @@
 using KCIAO.API.MVC.Domain.Interfaces;
 using KCIAO.API.MVC.Application.Interfaces;
 using KCIAO.API.MVC.Application.Dtos;
+using KCIAO.API.MVC.Application.Dtos.Edits;
 
 namespace KCIAO.API.MVC.Application.Services
 {
@@ -19,7 +20,7 @@ namespace KCIAO.API.MVC.Application.Services
             return _consultaRepository.DeletarDados(id);
         }
 
-        public ConsultaEntity? EditarDadosConsulta(string id, ConsultaDto entity)
+        public ConsultaEntity? EditarDadosConsulta(string id, ConsultaEditDto entity)
         {
             var consulta = new ConsultaEntity
             {
