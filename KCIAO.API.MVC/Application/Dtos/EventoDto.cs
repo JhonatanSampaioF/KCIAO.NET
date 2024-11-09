@@ -16,7 +16,6 @@ namespace KCIAO.API.MVC.Application.Dtos
         public string? desc_evento { get; set; }
 
         [Required(ErrorMessage = $"Campo {nameof(dt_evento)} é obrigatório")]
-        [JsonConverter(typeof(JsonDateConverter))]
         public DateTime dt_evento { get; set; }
 
         [Required(ErrorMessage = $"Campo {nameof(fk_cliente)} é obrigatório")]

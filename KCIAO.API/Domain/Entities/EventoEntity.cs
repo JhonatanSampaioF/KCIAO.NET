@@ -11,6 +11,6 @@ namespace KCIAO.API.Domain.Entities
         public string? id_evento { get; set; }
         public string? tipo_evento { get; set; }
         public string? desc_evento { get; set; }
-        public DateOnly dt_evento { get; set; }
+        public DateTime dt_evento { get; set; }
     }
 }
