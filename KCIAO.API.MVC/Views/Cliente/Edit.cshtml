@@ -7,7 +7,7 @@
 
 <h1>Edit</h1>
 
-<h4>ClienteModel</h4>
+<h4>Cliente</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="id_cliente" />
             <div class="form-group">
-                <label asp-for="nm_cliente" class="control-label"></label>
+                <label asp-for="nm_cliente" class="control-label">Nome</label>
                 <input asp-for="nm_cliente" class="form-control" />
                 <span asp-validation-for="nm_cliente" class="text-danger"></span>
             </div>

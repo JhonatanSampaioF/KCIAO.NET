@@ -59,7 +59,7 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoDto model)
+        public async Task<IActionResult> Create([Bind("id_evento,tipo_evento,desc_evento,dt_evento,fk_cliente")] EventoDto model)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_evento,tipo_evento,desc_evento,dt_evento")] EventoEditDto evento)
+        public async Task<IActionResult> Edit(string id, [Bind("id_evento,tipo_evento,desc_evento,dt_evento,fk_cliente")] EventoEditDto evento)
         {
             if (ModelState.IsValid)
             {

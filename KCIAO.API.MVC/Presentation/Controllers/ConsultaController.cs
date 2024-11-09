@@ -60,7 +60,7 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaDto model)
+        public async Task<IActionResult> Create([Bind("id_consulta,profissional,local_consulta,horario_consulta,fk_evento")] ConsultaDto model)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace KCIAO.API.MVC.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id_consulta,profissional,local_consulta,horario_consulta")] ConsultaEditDto consulta)
+        public async Task<IActionResult> Edit(string id, [Bind("id_consulta,profissional,local_consulta,horario_consulta,fk_evento")] ConsultaEditDto consulta)
         {
             if (ModelState.IsValid)
             {
