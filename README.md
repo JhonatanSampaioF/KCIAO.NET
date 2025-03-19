@@ -1,6 +1,6 @@
-![image](https://github.com/user-attachments/assets/9f0a7951-c726-468e-8538-9ef8ac9ce35e)# Definição do Projeto
+# Definição do Projeto
 
-### Integrantes
+## Integrantes
 Gustavo Vieira Bargas - rm553471
 </br>
 Jhonatan Sampaio Ferreira - rm553791
@@ -89,6 +89,9 @@ KCIAO.NET/
 ## Lista de Endpoints  
 Os endpoints abaixo seguem a estrutura padrão de uma API RESTful e estão mapeados para os domínios principais do sistema.  
 
+### Swagger
+O Swagger pode ser acessado pelo endpoint /swagger
+
 ---
 
 ### **Domínios e URLs Base**  
@@ -98,6 +101,7 @@ Os endpoints abaixo seguem a estrutura padrão de uma API RESTful e estão mapea
 | Consulta  | `/Consulta`      |  
 | Doença    | `/Doenca`        |  
 | Evento    | `/Evento`        |  
+| Swagger    | `/Swagger`        |  
 
 ---
 
