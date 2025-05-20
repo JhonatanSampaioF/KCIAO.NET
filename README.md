@@ -214,3 +214,30 @@ O Swagger pode ser acessado pelo endpoint /swagger
 
 #### Delete
 ![image](https://github.com/user-attachments/assets/c885f3a1-fdf5-498d-becb-2f687fdaaf56)
+
+
+### Testes com xUnit
+Testes de unidade com xUnit e Moq para a camada de aplicação (DoencaApplicationService), garantindo:
+
+1. Retorno correto da lista de doenças.
+2. Busca de doença por ID funcionando conforme esperado.
+
+### Práticas de Clean Code
+- Separation of concerns: divisão clara entre domínio, aplicação, infraestrutura e apresentação.
+- Injeção de dependência: serviços e repositórios desacoplados e injetados via construtores.
+- Nomenclatura clara: nomes explícitos para classes, métodos e variáveis facilitando entendimento.
+- Testabilidade: design orientado a testes, com mocks e abstrações.
+
+### Funcionalidades de IA Generativa
+- Implementação de RecommendationService com ML.NET para gerar recomendações personalizadas baseadas em dados históricos do cliente.
+- Treinamento do modelo usando fatoração de matriz para predição de doenças relacionadas.
+- API REST exposta via RecommendationController que retorna recomendações customizadas para clientes.
+- Estrutura preparada para evolução futura, integrando aprendizado contínuo e mais tipos de recomendações.
+
+### Tecnologias Utilizadas
+- .NET 8
+- ASP.NET Core Web API
+- xUnit, Moq
+- Entity Framework Core (InMemory e Oracle)
+- ML.NET para IA e recomendação
+- Swagger para documentação de API
