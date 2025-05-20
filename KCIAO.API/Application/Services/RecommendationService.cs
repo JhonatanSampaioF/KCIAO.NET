@@ -31,14 +31,9 @@ namespace KCIAO.API.Application.Services
 
         public IEnumerable<string> PredictRecommendations(string clienteId)
         {
-            // Exemplo: retorna recomendações baseadas no cliente
-            // Implementar lógica para prever os cuidados
-
-            // Como exemplo simples, retorne recomendações fixas:
             if (clienteId == null)
                 return new List<string> { "Recomendação geral: escove os dentes 3x ao dia, use fio dental." };
 
-            // Aqui você integraria a predição ML para retornar recomendações baseadas nas doenças
             return new List<string> { "Cuidados para gengivite", "Evitar doces excessivos" };
         }
     }
