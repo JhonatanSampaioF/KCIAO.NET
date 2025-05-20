@@ -16,6 +16,8 @@ builder.Services.AddDbContext<ApplicationContext>(options => {
 
 });
 
+builder.Services.AddSingleton<RecommendationService>();
+
 builder.Services.AddTransient<IDoencaRepository, DoencaRepository>();
 builder.Services.AddTransient<IDoencaApplicationService, DoencaApplicationService>();
 
@@ -51,3 +53,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KCIAO.API.Domain.Entities
 {
-    [Table("tb_repositorio_doenca")]
+    [Table("tb_doenca")]
     public class DoencaEntity
     {
         [Key]
